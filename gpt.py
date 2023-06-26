@@ -6,6 +6,22 @@ import re
 # Configuração da autenticação
 openai.api_key = Keys.KeyIa()
 
+
+def Exiting():
+    n = 0
+    p = str('')
+    time.sleep(1)
+    while n < 4:
+        os.system('clear')
+        print (logo.LOGO())
+        print ('\nSaindo'+p)
+        time.sleep(0.5)
+        p += '.'
+        n +=1
+
+
+
+
 def Digitar(text):
     print ('\033[0;33mGPT\033[0;31m:\033[0;m ')
     for c in text:
@@ -16,13 +32,15 @@ def Digitar(text):
 def obter_resposta(mensagem):
     
     # Enviando uma solicitação para a API
-    response = openai.Completion.create(
-        engine='text-davinci-003',
-        prompt=mensagem,
-        max_tokens=700
+    response = openai.ChatCompletion.create(
+        model='gpt-3.5-turbo',
+        messages=mensagem,
+        max_tokens=1024,
+        temperature=0.5
     )
 
-    resposta = response.choices[0].text.strip()
+    resposta = [response.choices[0].message.content, response.usage]
+    resposta = resposta[0]
     resposta = re.sub(r'import ','\033[0;34mimport \033[0;m',resposta)
     resposta = re.sub(r'from ', '\033[0;34mfrom \033[0;m', resposta)
     resposta = re.sub(r'global ', '\033[0;34mglobal \033[0;m', resposta)
@@ -50,10 +68,15 @@ print (logo.LOGO())
 while True:
     try:
         duvida = input(str('\n\033[0;32mUsuario\033[33m:\033[m '))
-        obter_resposta(duvida)
+
+        quest = [{'role':'system','content':'Voce e um assistente gente boa.'}]
+        quest.append({'role':'user','content': str(duvida)})
+        obter_resposta(quest)
+        if duvida == 'sair' or duvida == 'Sair':
+            Exiting()
+            break
     except KeyboardInterrupt:
-        print ('Saindo...')
-        time.sleep(0.5)
+        Exiting()
         break
 
     
