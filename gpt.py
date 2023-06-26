@@ -6,6 +6,14 @@ import re
 # Configuração da autenticação
 openai.api_key = Keys.KeyIa()
 
+def Save(msg,filename):
+    with open(filename, 'w') as file:
+        file.write(msg[0])
+        file.close()
+        return "Arquivo Salvo No Local Desejado!"
+
+    
+
 
 def Exiting():
     n = 0
@@ -39,8 +47,8 @@ def obter_resposta(mensagem):
         temperature=0.5
     )
 
-    resposta = [response.choices[0].message.content, response.usage]
-    resposta = resposta[0]
+    Onemsg = [response.choices[0].message.content, response.usage]
+    resposta = Onemsg[0]
     resposta = re.sub(r'import ','\033[0;34mimport \033[0;m',resposta)
     resposta = re.sub(r'from ', '\033[0;34mfrom \033[0;m', resposta)
     resposta = re.sub(r'global ', '\033[0;34mglobal \033[0;m', resposta)
@@ -63,18 +71,25 @@ def obter_resposta(mensagem):
     resposta = re.sub(r'\)', '\033[0;34m)\033[0;m',resposta)
     resposta = re.sub(r'#', '\033[0;35m#\033[0;m',resposta)
     Digitar(resposta)
+    return Onemsg
 os.system('clear')
 print (logo.LOGO())
 while True:
     try:
+        global text
         duvida = input(str('\n\033[0;32mUsuario\033[33m:\033[m '))
-
-        quest = [{'role':'system','content':'Voce e um assistente gente boa.'}]
-        quest.append({'role':'user','content': str(duvida)})
-        obter_resposta(quest)
         if duvida == 'sair' or duvida == 'Sair':
             Exiting()
             break
+        elif duvida == 'Salvar' or duvida == 'salvar':
+            filename = input(str('EXEMPLO > \033[0;33mcaminho/que/deseja.txt\033[0;32m\nNome do Arquivo\033[0;33m:\033[0;m'))
+            msg = Save(text, filename)
+            Digitar(msg)
+        else:
+            quest = [{'role':'system','content':'Voce e um assistente gente boa.'}]
+            quest.append({'role':'user','content': str(duvida)})
+            text = obter_resposta(quest)
+
     except KeyboardInterrupt:
         Exiting()
         break
