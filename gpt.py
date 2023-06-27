@@ -8,6 +8,20 @@ openai.api_key = Keys.KeyIa()
 
 
 
+def Container():
+    if os.path.exists('Documentos'):
+        files = os.listdir('Documentos')
+        qnt = 0
+        for file in files:
+            qnt += 1
+        if qnt == None:
+            return 0
+        else:
+            return qnt
+    else:
+        os.mkdir('Documentos')
+        Container()
+
 def Save(msg,filename):
     doc = 'Documentos'
     home = os.path.join(doc, filename)
@@ -18,6 +32,7 @@ def Save(msg,filename):
             return "Arquivo Salvo!"
     else:
         print ('Criando Pasta ',doc,' Aguarde Alguns Segundos!')
+        time.sleep(2)
         os.mkdir(doc)
         with open(home, 'w') as file:
             file.write(msg[0])
@@ -25,7 +40,18 @@ def Save(msg,filename):
             return "Arquivo Salvo!"
 
     
-
+def Main():
+    os.system('clear')
+    print (logo.LOGO())
+    print ('''
+\033[0;32m----------\033[0;33m+\033[0;m
+\033[0;34mComandos\033[0;m: \033[0;32m|---------------------\033[0;33m+\033[0;m
+ \033[0;33m/\033[0;34mSalvar  \033[0;32m|\033[0;34mPergunte Oque Quiser\033[0;33m!\033[0;32m|
+ \033[0;33m/\033[0;34mLimpar  \033[0;32m|---------------------\033[0;33m+
+ \033[0;33m/\033[0;34mSair    \033[0;32m|
+\033[0;32m----------\033[0;33m+\033[0;m''')
+    qnt = Container()
+    print (f'\033[7;32mArquivos Salvos(\033[7;33m{qnt}\033[7;32m)\033[0;m')
 
 def Exiting():
     n = 0
@@ -84,16 +110,9 @@ def obter_resposta(mensagem):
     resposta = re.sub(r'#', '\033[0;35m#\033[0;m',resposta)
     Digitar(resposta)
     return Onemsg
-os.system('clear')
-print (logo.LOGO())
-print ('''
-\033[0;32m----------\033[0;33m+\033[0;m
-\033[0;34mComandos\033[0;m: \033[0;32m|---------------------\033[0;33m+\033[0;m
- \033[0;33m/\033[0;34mSalvar  \033[0;32m|\033[0;34mPergunte Oque Quiser\033[0;33m!\033[0;32m|
- \033[0;33m/\033[0;34mSair    \033[0;32m|---------------------\033[0;33m+
-\033[0;32m----------\033[0;33m+
-\033[0;m
-''')
+
+
+Main()
 while True:
     try:
         global text
@@ -105,6 +124,8 @@ while True:
             filename = input(str('\033[0;32mNome do Arquivo\033[0;33m:\033[0;m'))
             msg = Save(text, filename)
             Digitar(msg)
+        elif duvida == '/Limpar' or duvida == '/limpar':
+            Main()
         else:
             quest = [{'role':'system','content':'Voce e um assistente gente boa.'}]
             quest.append({'role':'user','content': str(duvida)})
