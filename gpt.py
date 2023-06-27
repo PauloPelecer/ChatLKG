@@ -6,11 +6,23 @@ import re
 # Configuração da autenticação
 openai.api_key = Keys.KeyIa()
 
+
+
 def Save(msg,filename):
-    with open(filename, 'w') as file:
-        file.write(msg[0])
-        file.close()
-        return "Arquivo Salvo No Local Desejado!"
+    doc = 'Documentos'
+    home = os.path.join(doc, filename)
+    if os.path.exists(doc):
+        with open(home, 'w') as file:
+            file.write(msg[0])
+            file.close()
+            return "Arquivo Salvo!"
+    else:
+        print ('Criando Pasta ',doc,' Aguarde Alguns Segundos!')
+        os.mkdir(doc)
+        with open(home, 'w') as file:
+            file.write(msg[0])
+            file.close()
+            return "Arquivo Salvo!"
 
     
 
@@ -74,15 +86,23 @@ def obter_resposta(mensagem):
     return Onemsg
 os.system('clear')
 print (logo.LOGO())
+print ('''
+\033[0;32m----------\033[0;33m+\033[0;m
+\033[0;34mComandos\033[0;m: \033[0;32m|---------------------\033[0;33m+\033[0;m
+ \033[0;33m/\033[0;34mSalvar  \033[0;32m|\033[0;34mPergunte Oque Quiser\033[0;33m!\033[0;32m|
+ \033[0;33m/\033[0;34mSair    \033[0;32m|---------------------\033[0;33m+
+\033[0;32m----------\033[0;33m+
+\033[0;m
+''')
 while True:
     try:
         global text
         duvida = input(str('\n\033[0;32mUsuario\033[33m:\033[m '))
-        if duvida == 'sair' or duvida == 'Sair':
+        if duvida == '/sair' or duvida == '/Sair':
             Exiting()
             break
-        elif duvida == 'Salvar' or duvida == 'salvar':
-            filename = input(str('EXEMPLO > \033[0;33mcaminho/que/deseja.txt\033[0;32m\nNome do Arquivo\033[0;33m:\033[0;m'))
+        elif duvida == '/Salvar' or duvida == '/salvar':
+            filename = input(str('\033[0;32mNome do Arquivo\033[0;33m:\033[0;m'))
             msg = Save(text, filename)
             Digitar(msg)
         else:
